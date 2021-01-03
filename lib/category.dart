@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // Para usar @required, hay que importar la librería foundation (que re-exporta la librería de Dart meta.dart)
 import 'package:flutter/foundation.dart';
 
-/// @required es definido in el paquete meta.dart
+/// @required es definido en el paquete meta.dart
 /// import 'package:meta/meta.dart';
 
 // Usamos underscore para indicar que estas variables son privadas
