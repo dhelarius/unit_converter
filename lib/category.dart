@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 // Para usar @required, hay que importar la librería foundation (que re-exporta la librería de Dart meta.dart)
 import 'package:flutter/foundation.dart';
 
+import 'package:unit_converter/converter_route.dart';
+import 'package:unit_converter/unit.dart';
+
 /// @required es definido en el paquete meta.dart
 /// import 'package:meta/meta.dart';
 
@@ -17,6 +20,7 @@ class Category extends StatelessWidget {
   final String name;
   final ColorSwatch color;
   final IconData iconLocation;
+  final List<Unit> units;
 
   /// Crea una [Category] (categoría).
   ///
@@ -29,11 +33,43 @@ class Category extends StatelessWidget {
       {Key key,
       @required this.name,
       @required this.color,
-      @required this.iconLocation})
+      @required this.iconLocation,
+      @required this.units})
       : assert(name != null),
         assert(color != null),
         assert(iconLocation != null),
+        assert(units != null),
         super(key: key);
+
+  /// Navega hasta [ConverterRoute].
+  void _navigateToConverter(BuildContext context) {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    Navigator.of(context)
+        .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 1.0,
+          title: Text(
+            name,
+            style: Theme.of(context).textTheme.headline3,
+          ),
+          centerTitle: true,
+          backgroundColor: color,
+        ),
+        body: ConverterRoute(
+          name: name,
+          units: units,
+          color: color,
+        ),
+        // Esto evita que el teclado en pantalla afecte el tamaño de la
+        // pantalla, y el espacio asignado a los widgets.
+        // Ver https://docs.flutter.io/flutter/material/Scaffold/resizeToAvoidBottomPadding
+        resizeToAvoidBottomPadding: false,
+      );
+    }));
+  }
 
   /// Construye un widget personalizado que muestra la información para [Category].
   ///
@@ -42,7 +78,7 @@ class Category extends StatelessWidget {
   // El parametro `context` describe la ubicación de este widget en la
   // jerarquía de widgets. Puede ser usado para abtener datos del Theme(tema) mas cercano,
   // ancestro en la jerarquía. Debajo, podemos obtener el display1 para el tema text.
-  // Mira https://docs.flutter.io/flutter/material/Theme-class.html
+  // Ver https://docs.flutter.io/flutter/material/Theme-class.html
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
@@ -56,6 +92,7 @@ class Category extends StatelessWidget {
           // sintaxis.
           onTap: () {
             print('I was tapped!');
+            _navigateToConverter(context);
           },
           child: Padding(
             padding: EdgeInsets.all(8.0),
