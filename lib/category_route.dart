@@ -12,8 +12,15 @@ final _backgroundColor = Colors.green[100];
 ///
 /// Si bien se llama CategoryRoute, un nombre más adecuado sería CategoryScreen,
 /// porque es responsable de la interfaz de usuario en el destino de la ruta.
-class CategoryRoute extends StatelessWidget {
+class CategoryRoute extends StatefulWidget {
   const CategoryRoute();
+
+  @override
+  _CategoryRouteState createState() => _CategoryRouteState();
+}
+
+class _CategoryRouteState extends State<CategoryRoute> {
+  final _categories = <Category>[];
 
   static const _categoryNames = <String>[
     'Length',
@@ -37,13 +44,26 @@ class CategoryRoute extends StatelessWidget {
     Colors.red,
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    for (var i = 0; i < _categoryNames.length; i++) {
+      _categories.add(Category(
+        name: _categoryNames[i],
+        color: _baseColors[i],
+        iconLocation: Icons.cake,
+        units: _retrieveUnitList(_categoryNames[i]),
+      ));
+    }
+  }
+
   /// Hace el número correcto de filas para el listview.
   ///
   /// Para el retrato, construimos un [ListView] a partir de la lista de widgets de categoría.
-  Widget _buildCategoriesWidget(List<Widget> categories) {
+  Widget _buildCategoriesWidget() {
     return ListView.builder(
-      itemBuilder: (BuildContext context, int index) => categories[index],
-      itemCount: categories.length,
+      itemBuilder: (BuildContext context, int index) => _categories[index],
+      itemCount: _categories.length,
     );
   }
 
@@ -60,21 +80,10 @@ class CategoryRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categories = <Category>[];
-
-    for (var i = 0; i < _categoryNames.length; i++) {
-      categories.add(Category(
-        name: _categoryNames[i],
-        color: _baseColors[i],
-        iconLocation: Icons.cake,
-        units: _retrieveUnitList(_categoryNames[i]),
-      ));
-    }
-
     final listView = Container(
       color: _backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8.0),
-      child: _buildCategoriesWidget(categories),
+      child: _buildCategoriesWidget(),
     );
 
     final appBar = AppBar(
